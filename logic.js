@@ -152,16 +152,20 @@ function iniciarAplicacion() {
 // --- 6. Navegación por Pestañas ---
 document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', function() {
+        // Quitar estado activo de botones
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('activo'));
+        // Remover clase activa de todas las vistas
         document.querySelectorAll('.app-wrapper').forEach(v => {
             v.classList.remove('vista-activa');
         });
 
+        // Activar la pestaña correcta
         this.classList.add('activo');
         const targetId = this.getAttribute('data-target');
         const vista = document.getElementById(targetId);
         vista.classList.add('vista-activa');
 
+        // Disparar renderizados
         if(targetId === 'vista-semanal') renderizarSemana(fechaActualNavegacion);
         if(targetId === 'vista-calendario') renderizarMesCalendario();
         if(targetId === 'vista-area') renderizarReporteArea();
