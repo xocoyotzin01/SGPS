@@ -1,5 +1,5 @@
 // data.js
-// Este archivo actúa como tu Base de Datos central para GitHub Pages.
+// Archivo de Base de Datos y Usuarios (Seguridad y Respaldo)
 
 window.usuariosDB = {
     // Usuario Administrador
@@ -36,7 +36,7 @@ window.usuariosDB = {
     }
 };
 
-// Base de datos inicial de tareas
+// Base de datos inicial de tareas 
 window.baseDatosTareasInicial = {
     "2026-04-29": [
         { area: "Dirección de Ingreso - Gasto", titulo: "Boletín coyuntura económica (becefp)", tipo: "pendiente" },

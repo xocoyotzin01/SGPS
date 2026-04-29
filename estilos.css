@@ -27,7 +27,6 @@ body {
     min-height: 100vh;
 }
 
-/* Clases utilitarias globales */
 .oculto { display: none !important; }
 
 /* --- Pantalla Login --- */
@@ -59,7 +58,7 @@ body {
     width: 100%;
     display: flex;
     flex-direction: column;
-    flex: 1; /* Para que empuje el footer hacia abajo */
+    flex: 1; 
 }
 
 /* --- Encabezado Institucional (Blanco) --- */
@@ -101,11 +100,11 @@ body {
     width: 100%;
     background-color: var(--color-primario);
     display: flex;
-    justify-content: center; /* Centrar las pestañas en el medio */
+    justify-content: center; 
     align-items: center;
     padding: 0 5%;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    position: relative; /* Permite posicionar la info de usuario a la derecha */
+    position: relative; 
 }
 .tabs-navegacion {
     display: flex;
@@ -126,7 +125,6 @@ body {
     background-color: rgba(255, 255, 255, 0.15); 
 }
 
-/* Sesión de Usuario en la Barra Verde (Flotante a la derecha) */
 .user-session-info { 
     display: flex; 
     align-items: center; 
@@ -138,16 +136,15 @@ body {
 .btn-logout { background: transparent; border: 1px solid var(--color-blanco); color: var(--color-blanco); padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
 .btn-logout:hover { background: var(--color-blanco); color: var(--color-primario); }
 
-/* --- Área Principal (Contiene las tarjetas) --- */
+/* --- Área Principal --- */
 .main-content-area {
     padding: 2rem 5%;
     display: flex;
     justify-content: center;
     width: 100%;
-    flex: 1; /* Estira el área para empujar la firma al fondo */
+    flex: 1; 
 }
 
-/* --- Panel Estructural Base --- */
 .app-wrapper { 
     display: none; 
     width: 100%; 
@@ -260,11 +257,14 @@ body {
 .contenedor-reportes { display: flex; flex-direction: column; gap: 20px; }
 .grupo-reporte { border: 1px solid var(--color-borde); border-radius: 8px; overflow: hidden; }
 .grupo-cabecera { background-color: var(--color-fondo); padding: 12px 15px; font-weight: 700; font-size: 1.1rem; color: var(--color-primario); border-bottom: 1px solid var(--color-borde); }
-.tabla-reporte { width: 100%; border-collapse: collapse; text-align: left; }
+.tabla-reporte { width: 100%; border-collapse: collapse; text-align: left; min-width: 600px; /* Previene colapso extremo en móvil */}
 .tabla-reporte th, .tabla-reporte td { padding: 10px 15px; border-bottom: 1px solid var(--color-borde); font-size: 0.9rem; }
 .tabla-reporte th { color: var(--color-texto-secundario); font-weight: 600; background-color: #fdfdfd; }
 .tabla-reporte tr:last-child td { border-bottom: none; }
 .estado-badge { font-size: 0.75rem; padding: 3px 8px; border-radius: 12px; font-weight: 600; text-transform: capitalize; border: 1px solid #ccc;}
+
+/* Contenedor que permite scroll horizontal en tablas para celulares */
+.table-responsive { width: 100%; overflow-x: auto; }
 
 /* --- Modal (Formulario) --- */
 .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; z-index: 1000; }
@@ -294,11 +294,124 @@ body {
     border-top: 1px solid var(--color-borde);
     background-color: var(--color-fondo);
 }
-/* Excepción visual para la página de login (la hace flotante o unida al final) */
 .login-wrapper .footer-creditos {
     position: absolute;
     bottom: 0;
     background-color: transparent;
     border-top: none;
     color: #666666;
+}
+
+/* ======================================================= */
+/* ====== DISEÑO RESPONSIVO (CELULARES Y TABLETS) ======== */
+/* ======================================================= */
+@media screen and (max-width: 850px) {
+    /* Header Institucional Móvil */
+    .institucional-header {
+        flex-wrap: wrap;
+        justify-content: space-around;
+        padding: 15px 10px;
+    }
+    .logo-header-izq, .logo-header-der {
+        height: 55px; /* Logos más pequeños */
+    }
+    .header-titulos {
+        order: 3; /* Se coloca debajo de los logos */
+        width: 100%;
+        margin-top: 15px;
+        padding: 0;
+    }
+    .header-titulos h1 { font-size: 1.15rem; }
+    .header-titulos h2 { font-size: 0.9rem; }
+
+    /* Barra de Navegación Móvil */
+    .institucional-nav {
+        flex-direction: column;
+        padding: 10px;
+    }
+    .tabs-navegacion {
+        width: 100%;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 5px;
+    }
+    .tab-btn {
+        flex: 1 1 45%; /* Pestañas de 2 en 2 en móvil */
+        padding: 10px;
+        font-size: 0.85rem;
+        text-align: center;
+    }
+    .user-session-info {
+        position: relative; /* Quita el absoluto */
+        right: auto;
+        width: 100%;
+        justify-content: center;
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px solid rgba(255,255,255,0.2);
+    }
+
+    /* Layout General Móvil */
+    .main-content-area {
+        padding: 1rem 10px;
+    }
+    .app-wrapper {
+        flex-direction: column; /* Pone el lateral arriba del principal */
+        gap: 15px;
+    }
+    .panel-lateral {
+        width: 100%; /* Toma todo el ancho */
+    }
+    .tarjeta {
+        padding: 1rem;
+    }
+
+    /* Botones de Acción Móvil */
+    .barra-acciones {
+        flex-wrap: wrap;
+    }
+    .btn-accion {
+        flex: 1 1 100%; /* Botones de acción anchos */
+    }
+
+    /* Tareas y Calendario Móvil */
+    .tarea-card {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    .tarea-tipo {
+        margin-left: 33px; /* Alinea la etiqueta con el texto */
+    }
+    
+    .grid-calendario {
+        gap: 3px;
+    }
+    .celda-dia {
+        min-height: 70px;
+        padding: 3px;
+    }
+    .num-dia {
+        font-size: 0.8rem;
+    }
+    .indicador-tarea {
+        font-size: 0.55rem;
+        padding: 1px 2px;
+        white-space: normal; /* Permite que el texto baje si es largo */
+        word-break: break-all;
+    }
+    .grid-dias-semana {
+        font-size: 0.75rem;
+    }
+
+    /* Formularios y Filtros Móvil */
+    .barra-filtros {
+        flex-direction: column;
+    }
+    .barra-filtros select, .barra-filtros input[type="month"] {
+        width: 100%;
+    }
+    .modal-contenido {
+        width: 95%;
+        padding: 1.5rem;
+    }
 }

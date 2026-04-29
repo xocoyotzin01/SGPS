@@ -8,7 +8,6 @@ document.getElementById('formLogin').addEventListener('submit', function(e) {
     const pass = document.getElementById('passLogin').value.trim();
     const errorMsg = document.getElementById('errorLogin');
 
-    // Validación estricta con Object.hasOwn
     if (Object.hasOwn(window.usuariosDB, user) && window.usuariosDB[user].pass === pass) {
         usuarioActual = window.usuariosDB[user];
         errorMsg.classList.add('oculto');
@@ -153,20 +152,16 @@ function iniciarAplicacion() {
 // --- 6. Navegación por Pestañas ---
 document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', function() {
-        // Quitar estado activo de botones
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('activo'));
-        // Remover clase activa de todas las vistas
         document.querySelectorAll('.app-wrapper').forEach(v => {
             v.classList.remove('vista-activa');
         });
 
-        // Activar la pestaña correcta
         this.classList.add('activo');
         const targetId = this.getAttribute('data-target');
         const vista = document.getElementById(targetId);
         vista.classList.add('vista-activa');
 
-        // Disparar renderizados
         if(targetId === 'vista-semanal') renderizarSemana(fechaActualNavegacion);
         if(targetId === 'vista-calendario') renderizarMesCalendario();
         if(targetId === 'vista-area') renderizarReporteArea();
@@ -471,10 +466,12 @@ function renderizarReporteArea() {
         const grupoHTML = `
             <div class="grupo-reporte">
                 <div class="grupo-cabecera">🏢 ${area} <span style="float:right; font-size:0.8rem; font-weight:normal;">Total: ${agrupadas[area].length}</span></div>
-                <table class="tabla-reporte">
-                    <thead><tr><th>Día</th><th>Producto / Actividad</th><th style="text-align:center;">Estado</th></tr></thead>
-                    <tbody>${filasHTML}</tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="tabla-reporte">
+                        <thead><tr><th>Día</th><th>Producto / Actividad</th><th style="text-align:center;">Estado</th></tr></thead>
+                        <tbody>${filasHTML}</tbody>
+                    </table>
+                </div>
             </div>
         `;
         contenedor.insertAdjacentHTML('beforeend', grupoHTML);
@@ -514,10 +511,12 @@ function renderizarReporteProducto() {
         const grupoHTML = `
             <div class="grupo-reporte">
                 <div class="grupo-cabecera">📄 ${prod} <span style="float:right; font-size:0.8rem; font-weight:normal;">Total: ${agrupadas[prod].length}</span></div>
-                <table class="tabla-reporte">
-                    <thead><tr><th>Día</th><th>Área Responsable</th><th style="text-align:center;">Estado</th></tr></thead>
-                    <tbody>${filasHTML}</tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="tabla-reporte">
+                        <thead><tr><th>Día</th><th>Área Responsable</th><th style="text-align:center;">Estado</th></tr></thead>
+                        <tbody>${filasHTML}</tbody>
+                    </table>
+                </div>
             </div>
         `;
         contenedor.insertAdjacentHTML('beforeend', grupoHTML);
