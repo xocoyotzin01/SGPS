@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestión de Programación Semanal - CEFP</title>
+    <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<!-- PANTALLA DE LOGIN -->
+<div id="login-wrapper" class="login-wrapper">
+    <div class="login-card">
+        <div class="login-header">
+            <img src="iconos/logo1.png" alt="Logo CEFP" class="login-logo">
+            <h2 style="color: #275317;">CEFP</h2>
+            <p>Sistema de Gestión de Programación Semanal</p>
+        </div>
+        <form id="formLogin">
+            <div class="campo-login">
+                <label>Usuario</label>
+                <input type="text" id="userLogin" required placeholder="Ingresa tu usuario" autocomplete="off">
+            </div>
+            <div class="campo-login">
+                <label>Contraseña</label>
+                <input type="password" id="passLogin" required placeholder="••••••••" autocomplete="off">
+            </div>
+            <p id="errorLogin" class="error-msg oculto">Credenciales inválidas. Acceso denegado.</p>
+            <button type="submit" class="btn-login">Iniciar Sesión</button>
+        </form>
+    </div>
+    
+    <!-- Firma en Pantalla de Login -->
+    <div class="footer-creditos">Realizado por : Mtro. Erick Xocoyotzin Gómez González, 56001</div>
+</div>
+
+<!-- APLICACIÓN PRINCIPAL -->
+<div id="app-main" class="oculto">
+    
+    <!-- ENCABEZADO INSTITUCIONAL (Branding) -->
+    <header class="institucional-header">
+        <img src="iconos/logo2.png" alt="Cámara de Diputados" class="logo-header-izq">
+        <div class="header-titulos">
+            <h1>Centro de Estudios de las Finanzas Públicas,<br>Ifigenia Martínez y Hernández</h1>
+            <h2>Sistema de Gestión de Programación Semanal</h2>
+        </div>
+        <img src="iconos/logo1.png" alt="CEFP" class="logo-header-der">
+    </header>
+
+    <!-- BARRA DE NAVEGACIÓN VERDE -->
+    <nav class="institucional-nav">
+        <div class="tabs-navegacion">
+            <button class="tab-btn activo" data-target="vista-semanal">📅 Semana</button>
+            <button class="tab-btn" data-target="vista-calendario">📆 Mes (Calendario)</button>
+            <button class="tab-btn" data-target="vista-area">🏢 Por Área</button>
+            <button class="tab-btn" data-target="vista-producto">📄 Por Producto</button>
+        </div>
+
+        <div class="user-session-info">
+            <span id="lblUsuarioActual">Usuario</span>
+            <button id="btnCerrarSesion" class="btn-logout">Cerrar Sesión</button>
+        </div>
+    </nav>
+
+    <!-- ÁREA DE CONTENIDO (Fondo Gris Claro) -->
+    <div class="main-content-area">
+        
+        <!-- CONTENEDOR VISTA SEMANAL -->
+        <div id="vista-semanal" class="app-wrapper vista-activa">
+            <aside class="panel-lateral tarjeta">
+                <div class="header-lateral">
+                    <h2 class="titulo-lateral">Programa Semanal</h2>
+                    <div>
+                        <button id="btnExportarCSV" class="btn-exportar oculto" title="Descargar CSV para Excel">📥 CSV</button>
+                        <button id="btnExportarJSON" class="btn-exportar btn-exportar-json oculto" title="Descargar Respaldo JSON para GitHub">💾 Backup</button>
+                    </div>
+                </div>
+                
+                <div class="navegador-semanas">
+                    <button id="btnSemanaAnt" class="btn-nav">&#9664;</button>
+                    <div class="titulo-semana-container">
+                        <span id="textoRangoSemana" class="rango-semana">Cargando...</span>
+                        <button id="btnHoySemana" class="btn-hoy" title="Volver a la semana actual">Hoy</button>
+                    </div>
+                    <button id="btnSemanaSig" class="btn-nav">&#9654;</button>
+                </div>
+
+                <ul class="lista-dias" id="listaDias"></ul>
+            </aside>
+
+            <main class="panel-principal tarjeta">
+                <div class="cabecera-dia">
+                    <div class="usuario-header">
+                        <div class="usuario-avatar-large placeholder-avatar"></div>
+                        <div class="usuario-info">
+                            <h1 id="tituloDiaVista">Selecciona un día</h1>
+                            <span id="fechaDiaVista" class="subtitulo-fecha"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="barra-acciones" id="barraAcciones">
+                    <button id="btnBarraAgregar" class="btn-accion btn-accion-agregar">+ Agregar Tarea</button>
+                    <button id="btnBarraEditar" class="btn-accion btn-accion-editar">✎ Editar Tarea</button>
+                    <button id="btnBarraEliminar" class="btn-accion btn-accion-eliminar">🗑 Eliminar Tarea</button>
+                </div>
+
+                <div class="detalles-dia-seccion">
+                    <div class="contenedor-tareas" id="contenedorTareas"></div>
+                </div>
+            </main>
+        </div>
+
+        <!-- CONTENEDOR VISTA CALENDARIO MENSUAL -->
+        <div id="vista-calendario" class="app-wrapper">
+            <div class="tarjeta contenedor-mensual">
+                <div class="cabecera-mensual">
+                    <button id="btnMesAntCal" class="btn-nav-mes">&#9664;</button>
+                    <div class="titulo-mes-container">
+                        <h2 id="tituloMesCalendario">Mes Año</h2>
+                        <button id="btnHoyCal" class="btn-hoy">Hoy</button>
+                    </div>
+                    <button id="btnMesSigCal" class="btn-nav-mes">&#9654;</button>
+                </div>
+                <div class="grid-dias-semana">
+                    <span>Dom</span><span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span>
+                </div>
+                <div class="grid-calendario" id="gridCalendario"></div>
+            </div>
+        </div>
+
+        <!-- CONTENEDOR VISTA POR ÁREA -->
+        <div id="vista-area" class="app-wrapper">
+            <div class="tarjeta contenedor-mensual">
+                <div class="cabecera-filtros">
+                    <h2>Reporte por Área</h2>
+                    <div class="barra-filtros">
+                        <input type="month" id="filtroMesArea" title="Seleccionar Mes">
+                        
+                        <select id="filtroAreaArea">
+                            <option value="todas">Todas las Áreas</option>
+                            <option value="Directora de Estudios Macroeconómicos y Sectoriales">Dir. de Estudios Macroeconómicos y Sectoriales</option>
+                            <option value="Directora de Valoración de Impactos Presupuestarios">Dir. de Valoración de Impactos Presupuestarios</option>
+                            <option value="Director de Gasto Federalizado">Dir. de Gasto Federalizado</option>
+                            <option value="Dirección de Ingreso - Gasto">Dirección de Ingreso - Gasto</option>
+                        </select>
+
+                        <select id="filtroProdArea">
+                            <option value="todos">Todos los Productos</option>
+                            <option value="Estudios (cefp)">Estudios (cefp)</option>
+                            <option value="Notas Informativas (notacefp)">Notas Informativas (notacefp)</option>
+                            <option value="Boletín coyuntura económica (becefp)">Boletín coyuntura económica (becefp)</option>
+                            <option value="Indicadores económicos semanales (iescefp)">Indicadores económicos semanales (iescefp)</option>
+                            <option value="Infografía Ingresos y Egresos Estatales (dpie)">Infografía Ingresos y Egresos Estatales (dpie)</option>
+                            <option value="Mapa Plazos vencimiento deuda por entidad (mapDPIE)">Mapa Plazos vencimiento deuda por entidad (mapDPIE)</option>
+                            <option value="Infografía de Deuda Estatal del Sector Publico (DEPinfog)">Infografía de Deuda Estatal del Sector Publico (DEPinfog)</option>
+                            <option value="Infografías especiales (infdeh)">Infografías especiales (infdeh)</option>
+                            <option value="Presentaciones (precefp)">Presentaciones (precefp)</option>
+                            <option value="Lo que tienes que saber (LQSCEFP)">Lo que tienes que saber (LQSCEFP)</option>
+                            <option value="Boletines Fiscales (BFCEFP)">Boletines Fiscales (BFCEFP)</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="contenedorReporteArea" class="contenedor-reportes"></div>
+            </div>
+        </div>
+
+        <!-- CONTENEDOR VISTA POR PRODUCTO -->
+        <div id="vista-producto" class="app-wrapper">
+            <div class="tarjeta contenedor-mensual">
+                <div class="cabecera-filtros">
+                    <h2>Reporte por Producto</h2>
+                    <div class="barra-filtros">
+                        <input type="month" id="filtroMesProd" title="Seleccionar Mes">
+                        
+                        <select id="filtroAreaProd">
+                            <option value="todas">Todas las Áreas</option>
+                            <option value="Directora de Estudios Macroeconómicos y Sectoriales">Dir. de Estudios Macroeconómicos y Sectoriales</option>
+                            <option value="Directora de Valoración de Impactos Presupuestarios">Dir. de Valoración de Impactos Presupuestarios</option>
+                            <option value="Director de Gasto Federalizado">Dir. de Gasto Federalizado</option>
+                            <option value="Dirección de Ingreso - Gasto">Dirección de Ingreso - Gasto</option>
+                        </select>
+
+                        <select id="filtroProdProd">
+                            <option value="todos">Todos los Productos</option>
+                            <option value="Estudios (cefp)">Estudios (cefp)</option>
+                            <option value="Notas Informativas (notacefp)">Notas Informativas (notacefp)</option>
+                            <option value="Boletín coyuntura económica (becefp)">Boletín coyuntura económica (becefp)</option>
+                            <option value="Indicadores económicos semanales (iescefp)">Indicadores económicos semanales (iescefp)</option>
+                            <option value="Infografía Ingresos y Egresos Estatales (dpie)">Infografía Ingresos y Egresos Estatales (dpie)</option>
+                            <option value="Mapa Plazos vencimiento deuda por entidad (mapDPIE)">Mapa Plazos vencimiento deuda por entidad (mapDPIE)</option>
+                            <option value="Infografía de Deuda Estatal del Sector Publico (DEPinfog)">Infografía de Deuda Estatal del Sector Publico (DEPinfog)</option>
+                            <option value="Infografías especiales (infdeh)">Infografías especiales (infdeh)</option>
+                            <option value="Presentaciones (precefp)">Presentaciones (precefp)</option>
+                            <option value="Lo que tienes que saber (LQSCEFP)">Lo que tienes que saber (LQSCEFP)</option>
+                            <option value="Boletines Fiscales (BFCEFP)">Boletines Fiscales (BFCEFP)</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="contenedorReporteProducto" class="contenedor-reportes"></div>
+            </div>
+        </div>
+
+    </div> <!-- Fin Main Content Area -->
+    
+    <!-- Firma en Aplicación Principal -->
+    <div class="footer-creditos">Realizado por : Mtro. Erick Xocoyotzin Gómez González, 56001</div>
+    
+</div> <!-- Fin App Main -->
+
+<!-- Modal Formulario -->
+<div id="modalActividad" class="modal oculto">
+    <div class="modal-contenido">
+        <div class="modal-cabecera">
+            <h2 id="tituloModal">Registrar Nueva Actividad</h2>
+            <span class="cerrar-modal" id="btnCerrarModal">&times;</span>
+        </div>
+        <form id="formNuevaActividad">
+            <input type="hidden" id="inputFechaActividad">
+            
+            <div class="campo-form">
+                <label>Área / Dirección:</label>
+                <select id="inputArea" required>
+                    <option value="" disabled selected>Selecciona un área...</option>
+                    <option value="Directora de Estudios Macroeconómicos y Sectoriales">Directora de Estudios Macroeconómicos y Sectoriales</option>
+                    <option value="Directora de Valoración de Impactos Presupuestarios">Directora de Valoración de Impactos Presupuestarios</option>
+                    <option value="Director de Gasto Federalizado">Director de Gasto Federalizado</option>
+                    <option value="Dirección de Ingreso - Gasto">Dirección de Ingreso - Gasto</option>
+                </select>
+            </div>
+            
+            <div class="campo-form" style="margin-bottom: 2rem;">
+                <label>Tipo de Producto (Actividad):</label>
+                <select id="inputNombre" required>
+                    <option value="" disabled selected>Selecciona un producto...</option>
+                    <option value="Estudios (cefp)">Estudios (cefp)</option>
+                    <option value="Notas Informativas (notacefp)">Notas Informativas (notacefp)</option>
+                    <option value="Boletín coyuntura económica (becefp)">Boletín coyuntura económica (becefp)</option>
+                    <option value="Indicadores económicos semanales (iescefp)">Indicadores económicos semanales (iescefp)</option>
+                    <option value="Infografía Ingresos y Egresos Estatales (dpie)">Infografía Ingresos y Egresos Estatales (dpie)</option>
+                    <option value="Mapa Plazos vencimiento deuda por entidad (mapDPIE)">Mapa Plazos vencimiento deuda por entidad (mapDPIE)</option>
+                    <option value="Infografía de Deuda Estatal del Sector Publico (DEPinfog)">Infografía de Deuda Estatal del Sector Publico (DEPinfog)</option>
+                    <option value="Infografías especiales (infdeh)">Infografías especiales (infdeh)</option>
+                    <option value="Presentaciones (precefp)">Presentaciones (precefp)</option>
+                    <option value="Lo que tienes que saber (LQSCEFP)">Lo que tienes que saber (LQSCEFP)</option>
+                    <option value="Boletines Fiscales (BFCEFP)">Boletines Fiscales (BFCEFP)</option>
+                </select>
+            </div>
+            
+            <button type="submit" class="btn-guardar">Guardar Actividad</button>
+        </form>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="data.js"></script>
+<script src="logic.js"></script>
+</body>
+</html>
