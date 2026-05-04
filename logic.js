@@ -22,6 +22,7 @@ document.getElementById('btnCerrarSesion').addEventListener('click', function() 
     document.getElementById('app-main').classList.add('oculto');
     document.getElementById('login-wrapper').classList.remove('oculto');
     document.getElementById('formLogin').reset();
+    document.getElementById('selectorVistaCompartida').classList.add('oculto'); // Ocultar selector al salir
 });
 
 // --- 2. Persistencia de Datos (LocalStorage -> GitHub Adaptación) ---
@@ -99,7 +100,21 @@ function obtenerTareasPermitidasDia(fecha) {
     if (!baseDatosTareas[fecha]) return [];
     return baseDatosTareas[fecha]
         .map((t, index) => ({ ...t, indexReal: index }))
-        .filter(t => usuarioActual.rol === 'admin' || t.area === usuarioActual.area);
+        .filter(t => {
+            if (usuarioActual.rol === 'admin') return true;
+            
+            // Lógica para vista compartida Ingresos / Gasto
+            if (usuarioActual.area === 'Dirección de Ingresos' || usuarioActual.area === 'Dirección de Gasto') {
+                const vistaActual = document.getElementById('selectorVistaCompartida').value;
+                if (vistaActual === 'ambos') {
+                    return t.area === 'Dirección de Ingresos' || t.area === 'Dirección de Gasto';
+                } else {
+                    return t.area === vistaActual;
+                }
+            }
+            
+            return t.area === usuarioActual.area;
+        });
 }
 
 // --- 5. Inicialización ---
@@ -115,6 +130,15 @@ function iniciarAplicacion() {
     const filtroAreaArea = document.getElementById('filtroAreaArea');
     const filtroAreaProd = document.getElementById('filtroAreaProd');
     const selectAreaForm = document.getElementById('inputArea');
+    const selectorVista = document.getElementById('selectorVistaCompartida');
+
+    // Configuración Vista Compartida Ingreso/Gasto
+    if (usuarioActual.area === 'Dirección de Ingresos' || usuarioActual.area === 'Dirección de Gasto') {
+        selectorVista.classList.remove('oculto');
+        selectorVista.value = 'ambos'; // Mostrar todo por defecto
+    } else {
+        selectorVista.classList.add('oculto');
+    }
 
     if (usuarioActual.rol === 'admin') {
         btnCSV.classList.remove('oculto');
@@ -148,24 +172,35 @@ function iniciarAplicacion() {
     renderizarReporteProducto();
 }
 
+// Evento para actualizar vistas cuando se cambia el selector de Ingresos/Gasto
+document.getElementById('selectorVistaCompartida').addEventListener('change', () => {
+    const activeTab = document.querySelector('.tab-btn.activo').getAttribute('data-target');
+    if (activeTab === 'vista-semanal') {
+        renderizarSemana(fechaActualNavegacion);
+        if (diaSeleccionadoGlobal) verDetallesDia(diaSeleccionadoGlobal, nombreDiaGlobal);
+    } else if (activeTab === 'vista-calendario') {
+        renderizarMesCalendario();
+    } else if (activeTab === 'vista-area') {
+        renderizarReporteArea();
+    } else if (activeTab === 'vista-producto') {
+        renderizarReporteProducto();
+    }
+});
+
 
 // --- 6. Navegación por Pestañas ---
 document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', function() {
-        // Quitar estado activo de botones
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('activo'));
-        // Remover clase activa de todas las vistas
         document.querySelectorAll('.app-wrapper').forEach(v => {
             v.classList.remove('vista-activa');
         });
 
-        // Activar la pestaña correcta
         this.classList.add('activo');
         const targetId = this.getAttribute('data-target');
         const vista = document.getElementById(targetId);
         vista.classList.add('vista-activa');
 
-        // Disparar renderizados
         if(targetId === 'vista-semanal') renderizarSemana(fechaActualNavegacion);
         if(targetId === 'vista-calendario') renderizarMesCalendario();
         if(targetId === 'vista-area') renderizarReporteArea();
@@ -242,7 +277,7 @@ function verDetallesDia(fechaString, nombreDiaStr) {
     const tareasDelDia = obtenerTareasPermitidasDia(fechaString);
 
     if (tareasDelDia.length === 0) {
-        contenedorTareas.innerHTML = '<p style="color: #666; font-size: 0.9rem;">No hay actividades registradas para tu área este día.</p>';
+        contenedorTareas.innerHTML = '<p style="color: #666; font-size: 0.9rem;">No hay actividades registradas para visualizar este día.</p>';
         return;
     }
 
@@ -317,7 +352,21 @@ document.getElementById('btnBarraEditar').addEventListener('click', () => {
     
     document.getElementById('inputFechaActividad').value = diaSeleccionadoGlobal;
     document.getElementById('inputArea').value = tarea.area;
-    document.getElementById('inputNombre').value = tarea.titulo;
+    
+    // Lógica para detectar si el producto es "Otros"
+    const selectNombre = document.getElementById('inputNombre');
+    const opcionesNombre = Array.from(selectNombre.options).map(o => o.value);
+    
+    if (opcionesNombre.includes(tarea.titulo)) {
+        selectNombre.value = tarea.titulo;
+        document.getElementById('contenedorOtroProducto').classList.add('oculto');
+        document.getElementById('inputOtroProducto').required = false;
+    } else {
+        selectNombre.value = 'otros';
+        document.getElementById('contenedorOtroProducto').classList.remove('oculto');
+        document.getElementById('inputOtroProducto').value = tarea.titulo;
+        document.getElementById('inputOtroProducto').required = true;
+    }
     
     editandoIndex = idx; 
     document.getElementById('tituloModal').textContent = `Editar Actividad`;
@@ -328,11 +377,30 @@ document.getElementById('btnBarraEditar').addEventListener('click', () => {
 const modalActividad = document.getElementById('modalActividad');
 const formNuevaActividad = document.getElementById('formNuevaActividad');
 
+// Lógica de mostrar campo dinámico "Otros"
+document.getElementById('inputNombre').addEventListener('change', function() {
+    const contOtro = document.getElementById('contenedorOtroProducto');
+    const inputOtro = document.getElementById('inputOtroProducto');
+    if (this.value === 'otros') {
+        contOtro.classList.remove('oculto');
+        inputOtro.required = true;
+        inputOtro.focus();
+    } else {
+        contOtro.classList.add('oculto');
+        inputOtro.required = false;
+        inputOtro.value = '';
+    }
+});
+
 function abrirModalFormulario(fechaString, nombreDia) {
     editandoIndex = -1; 
     document.getElementById('inputFechaActividad').value = fechaString;
     document.getElementById('tituloModal').textContent = `Nueva Actividad: ${nombreDia}`;
     formNuevaActividad.reset(); 
+    
+    // Ocultar sección "Otros" por defecto al abrir
+    document.getElementById('contenedorOtroProducto').classList.add('oculto');
+    document.getElementById('inputOtroProducto').required = false;
     
     if (usuarioActual.rol === 'area') {
         document.getElementById('inputArea').value = usuarioActual.area;
@@ -346,7 +414,11 @@ formNuevaActividad.addEventListener('submit', (e) => {
     e.preventDefault(); 
     const fecha = document.getElementById('inputFechaActividad').value;
     const area = document.getElementById('inputArea').value;
-    const titulo = document.getElementById('inputNombre').value;
+    
+    let titulo = document.getElementById('inputNombre').value;
+    if (titulo === 'otros') {
+        titulo = document.getElementById('inputOtroProducto').value.trim();
+    }
 
     let estadoFinal = "pendiente"; 
 
@@ -375,7 +447,15 @@ function obtenerTareasFiltradasMes(mesInputId, areaInputId, prodInputId) {
     let areaVal = document.getElementById(areaInputId).value;
     const prodVal = document.getElementById(prodInputId).value;
 
-    if(usuarioActual.rol === 'area') areaVal = usuarioActual.area;
+    // Adaptación del filtro para la vista mensual si es usuario de área
+    if(usuarioActual.rol === 'area') {
+        if (usuarioActual.area === 'Dirección de Ingresos' || usuarioActual.area === 'Dirección de Gasto') {
+            const vista = document.getElementById('selectorVistaCompartida').value;
+            areaVal = vista; // 'ambos', 'Dirección de Ingresos', o 'Dirección de Gasto'
+        } else {
+            areaVal = usuarioActual.area;
+        }
+    }
 
     let [anioFiltro, mesFiltro] = mesVal ? mesVal.split('-') : [null, null];
     let tareasFiltradas = [];
@@ -385,7 +465,14 @@ function obtenerTareasFiltradasMes(mesInputId, areaInputId, prodInputId) {
         if (anioFiltro && (anioT !== anioFiltro || mesT !== mesFiltro)) continue;
 
         baseDatosTareas[fechaKey].forEach(t => {
-            if (areaVal !== 'todas' && t.area !== areaVal) return;
+            // Filtrado por área considerando "ambos"
+            if (areaVal !== 'todas') {
+                if (areaVal === 'ambos') {
+                    if (t.area !== 'Dirección de Ingresos' && t.area !== 'Dirección de Gasto') return;
+                } else if (t.area !== areaVal) {
+                    return;
+                }
+            }
             if (prodVal !== 'todos' && t.titulo !== prodVal) return;
             tareasFiltradas.push({ fecha: fechaKey, diaNum: parseInt(diaT), ...t });
         });

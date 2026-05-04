@@ -132,6 +132,23 @@ body {
     position: absolute;
     right: 5%;
 }
+
+.selector-vista {
+    background-color: var(--color-blanco);
+    color: var(--color-primario);
+    border: 1px solid var(--color-blanco);
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    outline: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.selector-vista:focus {
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.5);
+}
+
 #lblUsuarioActual { font-size: 0.85rem; font-weight: 600; color: var(--color-blanco); text-transform: uppercase; }
 .btn-logout { background: transparent; border: 1px solid var(--color-blanco); color: var(--color-blanco); padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
 .btn-logout:hover { background: var(--color-blanco); color: var(--color-primario); }
@@ -276,8 +293,9 @@ body {
 
 .campo-form { margin-bottom: 1.2rem; }
 .campo-form label { display: block; font-size: 0.9rem; font-weight: 600; margin-bottom: 0.5rem; color: #555;}
-.campo-form select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.95rem; background-color: white; color: #333; cursor: pointer;}
-.campo-form select:focus { outline: none; border-color: var(--color-primario); box-shadow: 0 0 0 2px rgba(39, 83, 23, 0.2); }
+.campo-form select, .campo-form input[type="text"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.95rem; background-color: white; color: #333; outline: none;}
+.campo-form select { cursor: pointer; }
+.campo-form select:focus, .campo-form input[type="text"]:focus { outline: none; border-color: var(--color-primario); box-shadow: 0 0 0 2px rgba(39, 83, 23, 0.2); }
 .campo-form select:disabled { background-color: #e9ecef; cursor: not-allowed; color: #6c757d;}
 
 .btn-guardar { width: 100%; padding: 12px; background-color: var(--color-primario); color: white; border: none; border-radius: 6px; font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 10px; transition: background 0.2s; }

@@ -56,6 +56,11 @@
         </div>
 
         <div class="user-session-info">
+            <select id="selectorVistaCompartida" class="selector-vista oculto">
+                <option value="ambos">Ver: Ingresos y Gasto</option>
+                <option value="Dirección de Ingresos">Ver: Solo Ingresos</option>
+                <option value="Dirección de Gasto">Ver: Solo Gasto</option>
+            </select>
             <span id="lblUsuarioActual">Usuario</span>
             <button id="btnCerrarSesion" class="btn-logout">Cerrar Sesión</button>
         </div>
@@ -232,7 +237,7 @@
                 </select>
             </div>
             
-            <div class="campo-form" style="margin-bottom: 2rem;">
+            <div class="campo-form" style="margin-bottom: 1rem;">
                 <label>Tipo de Producto (Actividad):</label>
                 <select id="inputNombre" required>
                     <option value="" disabled selected>Selecciona un producto...</option>
@@ -248,7 +253,14 @@
                     <option value="Lo que tienes que saber (LQSCEFP)">Lo que tienes que saber (LQSCEFP)</option>
                     <option value="Boletines Fiscales (BFCEFP)">Boletines Fiscales (BFCEFP)</option>
                     <option value="Informe Trimestral Hacienda">Informe Trimestral Hacienda</option>
+                    <option value="otros">Otros (Especificar)...</option>
                 </select>
+            </div>
+            
+            <!-- CONTENEDOR PARA PRODUCTO PERSONALIZADO -->
+            <div id="contenedorOtroProducto" class="campo-form oculto" style="margin-bottom: 2rem;">
+                <label>Especificar Producto:</label>
+                <input type="text" id="inputOtroProducto" placeholder="Escribe el nombre del producto o actividad" autocomplete="off" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.95rem;">
             </div>
             
             <button type="submit" class="btn-guardar">Guardar Actividad</button>
